@@ -196,7 +196,6 @@ const CustomerOverview = () => {
       {/* Toolbar */}
       <header className="toolbar">
         <div className="toolbar-left">
-          <div className="phone-logo">📱</div>
           <h1 className="toolbar-title">SkyLink Customer</h1>
         </div>
         <button 
@@ -449,7 +448,6 @@ const PlanDetails = ({ plan, onSubscribe, onBack, isSubscribing }) => {
   );
 };
 
-// Complaints Component (✅ Added fully functional)
 const Complaints = () => {
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
@@ -511,46 +509,130 @@ const Complaints = () => {
     }
   };
 
+  const getStatusClass = (status) => {
+    const statusMap = {
+      'In Progress': 'status-in-progress',
+      'Resolved': 'status-resolved',
+      'Pending': 'status-pending',
+      'Rejected': 'status-rejected'
+    };
+    
+    return statusMap[status] || 'status-default';
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'numeric',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
   return (
-    <div className="tab-content">
-      <h2>⚠️ Raise & Track Complaints</h2>
+    <div className="complaints-container">
+      <div className="complaints-wrapper">
+        <div className="complaints-grid">
+          
+          {/* Left Column - Raise New Complaint */}
+          <div className="complaint-card">
+            <div className="form-section">
+              <h2 className="form-title">
+                Raise a New Complaint
+              </h2>
+              <p className="form-subtitle">
+                Describe your issue and we'll help resolve it
+              </p>
+            </div>
 
-      {/* Complaint Form */}
-      <form className="complaint-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Complaint Subject"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          required
-        />
-        <textarea
-          placeholder="Describe your issue..."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
-        <button type="submit">Submit Complaint</button>
-      </form>
+            <form onSubmit={handleSubmit} className="form-container">
+              <div className="form-group">
+                <label className="form-label">
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  placeholder="Brief description of your issue"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  className="form-input"
+                  required
+                />
+              </div>
 
-      {/* Complaint History */}
-      <h3>Your Complaints</h3>
-      {loading ? (
-        <p>Loading complaints...</p>
-      ) : complaints.length === 0 ? (
-        <p>No complaints found.</p>
-      ) : (
-        <ul className="complaints-list">
-          {complaints.map((c) => (
-            <li key={c.id} className="complaint-item">
-              <strong>ID #{c.id}</strong> — {c.subject}
-              <br />
-              <small>Status: {c.status}</small>
-              <p>{c.description}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+              <div className="form-group">
+                <label className="form-label">
+                  Description
+                </label>
+                <textarea
+                  placeholder="Please provide detailed information about your issue..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="form-textarea"
+                  rows={4}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="submit-button">
+                Submit Complaint
+              </button>
+            </form>
+          </div>
+
+          {/* Right Column - Your Complaints */}
+          <div className="complaint-card">
+            <div className="complaints-section">
+              <h2 className="complaints-title">
+                Your Complaints
+              </h2>
+              <p className="complaints-subtitle">
+                Track the status of your submitted complaints
+              </p>
+            </div>
+
+            <div className="complaints-list">
+              {loading ? (
+                <div className="loading-state">
+                  <p className="loading-text">Loading complaints...</p>
+                </div>
+              ) : complaints.length === 0 ? (
+                <div className="empty-state">
+                  <p className="empty-text">No complaints found.</p>
+                </div>
+              ) : (
+                complaints.map((complaint, index) => (
+                  <div key={complaint.id} className="complaint-item">
+                    <div className="complaint-header">
+                      <h3 className="complaint-id">
+                        #CMP{String(complaint.id).padStart(3, '0')}
+                      </h3>
+                      <span className={`status-badge ${getStatusClass(complaint.status)}`}>
+                        {complaint.status}
+                      </span>
+                    </div>
+                    
+                    <h4 className="complaint-subject">
+                      {complaint.subject}
+                    </h4>
+                    
+                    <p className="complaint-description">
+                      {complaint.description}
+                    </p>
+                    
+                    <div className="complaint-footer">
+                      <span>
+                        Submitted: {formatDate(complaint.createdAt || complaint.submissionDate)}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -310,7 +310,6 @@ const AdminOverview = () => {
       {/* Toolbar */}
       <header className="toolbar">
         <div className="toolbar-left">
-          <div className="phone-logo">📞</div>
           <h1 className="toolbar-title">SkyLink Admin</h1>
         </div>
         <button className="logout-btn" onClick={handleLogout}>

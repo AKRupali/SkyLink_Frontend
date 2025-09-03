@@ -228,6 +228,7 @@
 .table-container {
   overflow-x: auto;
   margin-top: 1.5rem;
+  width: 100%;
 }
 
 .customers-table {
@@ -529,6 +530,8 @@
   width: 100%;
   border-collapse: collapse;
   color : black;
+  min-width: 900px;         /* Prevents collapsing on narrow screens */
+  table-layout: fixed;
 }
 
 .complaints-table th,
@@ -536,6 +539,9 @@
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  word-break: break-word;   /* Breaks long words */
+  white-space: normal;
+  overflow-wrap:break-word ;
 }
 
 .complaint-description {
@@ -553,6 +559,11 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+/* th:nth-child(1),td:nth-child(1){width:20%;}
+th:nth-child(2),td:nth-child(2){width:45%;}
+th:nth-child(3),td:nth-child(3){width:15%;}
+th:nth-child(4),td:nth-child(4){width:20%;} */
 
 .resolve-btn:hover:not(:disabled) {
   background-color: #218838;
@@ -790,7 +801,7 @@ Status styles
 
 .edit-btn {
   padding: 6px 12px;
-  background-color: #ffc107;
+  background-color: #41cfeb;
   color: #212529;
   border: none;
   border-radius: 4px;
@@ -798,7 +809,7 @@ Status styles
 }
 
 .edit-btn:hover {
-  background-color: #e0a800;
+  background-color: #10ada3;
 }
 
 .toggle-btn {
@@ -875,4 +886,50 @@ Status styles
 canvas {
   max-width: 100%;
   height: auto !important;
+}
+/* === HARD FIX: Complaints table alignment & wrapping (6 columns) === */
+.complaints-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  table-layout: fixed !important; /* lock column widths across rows */
+}
+
+/* force normal table flow */
+.complaints-table thead { display: table-header-group !important; }
+.complaints-table tbody { display: table-row-group !important; }
+.complaints-table tr    { display: table-row !important; }
+
+/* cell styling */
+.complaints-table th,
+.complaints-table td {
+  display: table-cell !important;
+  box-sizing: border-box !important;
+  padding: 12px !important;
+  text-align: left !important;
+  border-bottom: 1px solid #ddd !important;
+  vertical-align: top !important;
+  white-space: normal !important;       /* wrap text */
+  word-break: break-word !important;    /* break long words */
+  overflow-wrap: anywhere !important;   /* wrap anywhere */
+}
+
+/* description cell: prevent forced single-line */
+.complaints-table td.description {
+  max-width: none !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+}
+
+/* lock column widths for 6 columns */
+.complaints-table th:nth-child(1), .complaints-table td:nth-child(1) { width: 10% !important; } /* Complaint ID */
+.complaints-table th:nth-child(2), .complaints-table td:nth-child(2) { width: 15% !important; } /* Subject */
+.complaints-table th:nth-child(3), .complaints-table td:nth-child(3) { width: 30% !important; } /* Description */
+.complaints-table th:nth-child(4), .complaints-table td:nth-child(4) { width: 15% !important; } /* Status */
+.complaints-table th:nth-child(5), .complaints-table td:nth-child(5) { width: 15% !important; } /* Date Created */
+.complaints-table th:nth-child(6), .complaints-table td:nth-child(6) { width: 15% !important; } /* Action */
+
+/* keep action buttons inline */
+.complaints-table td:last-child button {
+  white-space: nowrap !important;
 }
